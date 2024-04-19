@@ -2,52 +2,90 @@
 
 #include <magic_enum_iostream.hpp>
 
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/bundled/ranges.h>
+#include <spdlog/fmt/ostr.h>
+
 #include <uvw/timer.h>
 #include <uvw_iot/common/ThingFactory.h>
+#include <uvw_iot/common/ThingProperty.h>
 #include <uvw_iot/common/ThingRepository.h>
+#include <uvw_iot/sunspec/SunSpecThing.h>
 #include <uvw_net/dns_sd/DnsServiceDiscovery.h>
+#include <uvw_net/modbus/ModbusDiscovery.h>
+#include <uvw_net/sunspec/SunSpecDiscovery.h>
 
+using namespace spdlog;
 using namespace uvw_iot::common;
+using namespace uvw_iot::sunspec;
 using namespace uvw_net::dns_sd;
+using namespace uvw_net::modbus;
+using namespace uvw_net::sunspec;
 
 using magic_enum::iostream_operators::operator<<;
-std::ostream& operator<<(std::ostream& s, uvw_iot::common::ThingPropertyValue const& v){
-    std::visit([&](auto& arg) {
-        s << arg;
-    }, v); return s;
+std::ostream& operator<<(std::ostream& s, const uvw_iot::common::ThingPropertyMap& map) {
+    for (const auto& [k, v] : map) {
+        s << k << ": ";
+        std::visit([&](auto& arg) {
+            using T = std::decay_t<decltype(arg)>;
+            if constexpr (std::is_same_v<T, std::array<int16_t, 3>>) {
+                s << "[" << arg[0] << ", " << arg[1] << ", " << arg[2] << "]";
+            } else {
+                s << arg;
+            }
+        }, v);
+        s << ", ";
+    }
+
+    return s;
 }
 
 int main() {
     ThingRepository thingRepository;
     thingRepository.thingAdded().subscribe([](const ThingPtr& t) {
-        std::cout << "thing added> id: " << t->id() << std::endl;
+        info("thing added> id: {}", t->id());
     });
     thingRepository.thingRemoved().subscribe([](const std::string& id) {
-        std::cout << "thing removed> id: " << id << std::endl;
+        info("thing removed> id: {}", id);
     });
-    thingRepository.propertiesObservable().subscribe([](const auto& t) {
-        std::cout << t.first << "> properties updated> ";
-        for (const auto& p : t.second) {
-            std::cout << p.first << ": " << p.second << ", ";
-        }
-        std::cout << std::endl;
+    thingRepository.propertiesObservable().subscribe([&](const auto& t) {
+        std::stringstream ss;
+        ss << t.second;
+        info("{}> properties updated> {}", t.first, ss.str());
     });
 
     DnsServiceDiscovery dnsDiscovery;
-    //dnsDiscovery.discover("_http._tcp.local");
     dnsDiscovery.on<DnsRecordDataSrv>([&](const DnsRecordDataSrv& data, const DnsServiceDiscovery&) {
         const auto host = data.target.substr(0, data.target.find("."));
         auto thing = ThingFactory::from(host);
         if (thing) thingRepository.addThing(thing);
     });
 
-    // Start a timer
-    auto timer = uvw::loop::get_default()->resource<uvw::timer_handle>();
-    timer->on<uvw::timer_event>([&](const auto&, auto&) {
+    SunSpecDiscovery sunspecDiscovery;
+    sunspecDiscovery.on<SunSpecClientPtr>([&](SunSpecClientPtr client, const SunSpecDiscovery&) {
+        thingRepository.addThing(std::make_shared<SunSpecThing>(client));
+    });
+
+    ModbusDiscovery modbusDiscovery;
+    modbusDiscovery.on<ModbusClientPtr>([&](ModbusClientPtr client, const ModbusDiscovery&) {
+        sunspecDiscovery.discover(client);
+    });
+
+    // Start a discovery timer
+    auto discoveryTimer = uvw::loop::get_default()->resource<uvw::timer_handle>();
+    discoveryTimer->on<uvw::timer_event>([&](const auto&, auto&) {
+        info("start discoveries>");
         dnsDiscovery.discover("_http._tcp.local");
+        modbusDiscovery.discover();
+    });
+    discoveryTimer->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{30000});
+
+    // Start a read timer
+    auto readTimer = uvw::loop::get_default()->resource<uvw::timer_handle>();
+    readTimer->on<uvw::timer_event>([&](const auto&, auto&) {
         thingRepository.getProperties();
     });
-    timer->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{3000});
+    readTimer->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{3000});
 
     // Run the event loop
     return uvw::loop::get_default()->run();

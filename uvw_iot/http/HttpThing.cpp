@@ -15,20 +15,25 @@ public:
     HttpClient client;
 };
 
-HttpThing::HttpThing(const std::string& host) :
+HttpThing::HttpThing(const std::string& host, uint16_t port) :
     d(std::make_unique<HttpThingPrivate>()),
-    _host(host) {
+    _host(host),
+    _port(port) {
     d->client.on<uvw::error_event>([this](const uvw::error_event&, const HttpClient&) {
         ++_errorCount;
-        if (_errorCount > 2) close();
+        if (_errorCount > 5) close();
     });
     d->client.on<HttpResponse>([this](const HttpResponse& response, const HttpClient&) {
         _errorCount = 0;
-        onBody(response.body);
+        if (!response.body.empty()) onBody(response.body);
     });
 }
 
 HttpThing::~HttpThing() {
+}
+
+const std::string& HttpThing::id() const {
+    return host();
 }
 
 const std::string& HttpThing::host() const {

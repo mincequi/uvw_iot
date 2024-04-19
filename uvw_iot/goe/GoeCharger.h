@@ -1,26 +1,26 @@
 #pragma once
 
+#include <uvw_iot/common/ThingStatus.h>
 #include <uvw_iot/http/HttpThing.h>
 
 namespace uvw_iot {
-namespace shelly {
+namespace goe {
 
-class ShellyThing : public http::HttpThing {
+class GoeCharger : public http::HttpThing {
 public:
     static common::ThingPtr from(const std::string& host, uint16_t port);
 
 private:
-    ShellyThing(const std::string& host, uint16_t port, bool isPm);
+    using HttpThing::HttpThing;
 
-    // Thing overrides
     void getProperties() override;
     void onSetProperty(common::ThingPropertyKey key, const common::ThingPropertyValue& value) override;
 
     // HttpThing overrides
     void onBody(const std::string& body) override;
 
-    bool _isPm = false;
+    common::ThingStatus _status = common::ThingStatus::unknown;
 };
 
-} // namespace shelly
+} // namespace goe
 } // namespace uvw_iot

@@ -13,7 +13,6 @@ using namespace uvw_iot::common;
 
 ShellyThing::ShellyThing(const std::string& host, uint16_t port, bool isPm) :
     HttpThing(host),
-    _port(port),
     _isPm(isPm) {
 }
 
@@ -28,12 +27,7 @@ ThingPtr ShellyThing::from(const std::string& host, uint16_t port) {
     return nullptr;
 }
 
-const std::string& ShellyThing::id() const {
-    return host();
-}
-
 void ShellyThing::getProperties() {
-    // alw,car,eto,nrg,wh,trx,cards"
     get("/status");
 }
 
@@ -59,7 +53,7 @@ void ShellyThing::onBody(const std::string &body) {
     }
 
     if (_isPm && doc.contains("meters")) {
-        properties[ThingPropertyKey::power] = (int16_t)round(doc["meters"][0]["power"].get<double>());
+        properties[ThingPropertyKey::power] = (int16_t)round(doc["meters"][0]["power"].get<double>()*0.1);
     }
     if (doc.contains("ext_temperature") && !doc.at("ext_temperature").empty()) {
         properties[ThingPropertyKey::temperature] = (int16_t)round(doc.at("ext_temperature").at("0").at("tC").get<double>()*10.0);

@@ -1,8 +1,10 @@
 #pragma once
 
+#include <array>
 #include <cstdint>
 #include <map>
-#include <ostream>
+#include <string>
+#include <variant>
 
 namespace uvw_iot {
 namespace common {
@@ -47,7 +49,7 @@ enum class ThingPropertyKey : int8_t {
     max_value = 24
 };
 
-using ThingPropertyValue = std::variant<bool, int16_t, std::string>;
+using ThingPropertyValue = std::variant<bool, int16_t, std::string, std::array<int16_t, 3>>;
 using ThingPropertyMap = std::map<ThingPropertyKey, ThingPropertyValue>;
 
 } // namespace common
