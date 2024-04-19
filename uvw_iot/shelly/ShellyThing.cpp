@@ -53,10 +53,10 @@ void ShellyThing::onBody(const std::string &body) {
     }
 
     if (_isPm && doc.contains("meters")) {
-        properties[ThingPropertyKey::power] = (int16_t)round(doc["meters"][0]["power"].get<double>()*0.1);
+        properties[ThingPropertyKey::power] = (int)round(doc["meters"][0]["power"].get<double>());
     }
     if (doc.contains("ext_temperature") && !doc.at("ext_temperature").empty()) {
-        properties[ThingPropertyKey::temperature] = (int16_t)round(doc.at("ext_temperature").at("0").at("tC").get<double>()*10.0);
+        properties[ThingPropertyKey::temperature] = (int)round(doc.at("ext_temperature").at("0").at("tC").get<double>()*10.0);
     }
 
     if (!properties.empty()) {

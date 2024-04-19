@@ -11,6 +11,24 @@ using namespace uvw_net::sunspec;
 
 SunSpecThing::SunSpecThing(SunSpecClientPtr client) :
     _client(client) {
+    for (const auto& kv : client->models()) {
+        auto m = magic_enum::enum_cast<SunSpecModel::Id>(kv.first);
+        if (m.has_value()) {
+            switch (m.value()) {
+                case SunSpecModel::Id::InverterSinglePhase:
+                case SunSpecModel::Id::InverterThreePhase:
+                case SunSpecModel::Id::InverterSplitPhase:
+                    _type = ThingType::SolarInverter;
+                    break;
+                case SunSpecModel::Id::MeterWyeConnectThreePhase:
+                    _type = ThingType::SmartMeter;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if (_type != ThingType::Unknown) break;
+    }
 
     _client->on<uvw::close_event>([this](const auto&, const auto&) {
         close();
@@ -30,10 +48,10 @@ SunSpecThing::SunSpecThing(SunSpecClientPtr client) :
         for (const auto& v : model.values()) {
             switch (v.first) {
             case DataPoint::totalActiveAcPower:
-                props[ThingPropertyKey::power] = (int16_t)Util::divAndRound(std::get<int32_t>(v.second), 10);
+                props[ThingPropertyKey::power] = std::get<int>(v.second);
                 break;
             case DataPoint::operatingStatus:
-                props[ThingPropertyKey::status] = (int16_t)std::get<InverterOperatingStatus>(v.second);
+                props[ThingPropertyKey::status] = (int)std::get<InverterOperatingStatus>(v.second);
             default:
                 break;
             }
@@ -42,8 +60,15 @@ SunSpecThing::SunSpecThing(SunSpecClientPtr client) :
     });
 }
 
+SunSpecThing::~SunSpecThing() {
+}
+
 const std::string& SunSpecThing::id() const {
     return _client->sunSpecId();
+}
+
+ThingType SunSpecThing::type() const {
+    return _type;
 }
 
 void SunSpecThing::getProperties() {

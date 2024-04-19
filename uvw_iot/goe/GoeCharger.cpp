@@ -26,17 +26,17 @@ void GoeCharger::onSetProperty(ThingPropertyKey key, const ThingPropertyValue& v
     case ThingPropertyKey::current:
         std::visit([&](auto&& arg) {
             using T = std::decay_t<decltype(arg)>;
-            if constexpr (std::is_same_v<T, int16_t>) {
+            if constexpr (std::is_same_v<T, int>) {
                 if (arg == 0) {
                     set("/api/set?frc=1");
                 } else {
                     set("/api/set?psm=1"); // force 1 phase
-                    set("/api/set?amp=" + std::to_string(std::clamp(arg/10, 6, 32)));
+                    set("/api/set?amp=" + std::to_string(std::clamp(arg, 6, 32)));
                     set("/api/set?frc=2"); // switch on
                 }
-            } else if constexpr (std::is_same_v<T, std::array<int16_t, 3>>) {
+            } else if constexpr (std::is_same_v<T, std::array<int, 3>>) {
                 set("/api/set?psm=2"); // force 3 phase
-                set("/api/set?amp=" + std::to_string(std::clamp(arg.front()/10, 6, 32)));
+                set("/api/set?amp=" + std::to_string(std::clamp(arg.front(), 6, 32)));
                 set("/api/set?frc=2");
             }
         }, value);
@@ -58,7 +58,7 @@ void GoeCharger::onBody(const std::string& body) {
     const auto nrg = doc["nrg"].get<std::vector<double>>();
     if (nrg.empty()) return;
 
-    std::array<int16_t, 3> voltage;
+    std::array<int, 3> voltage;
     voltage.at(0) = ceil(nrg[0]);
     voltage.at(1) = ceil(nrg[1]);
     voltage.at(2) = ceil(nrg[2]);
@@ -66,8 +66,8 @@ void GoeCharger::onBody(const std::string& body) {
     _status = goe::toStatus(doc["car"].get<int>());
 
     publish({
-        { ThingPropertyKey::status, (int16_t)(_status) },
-        { ThingPropertyKey::power, (int16_t)round(nrg[11]*0.1) },
+        { ThingPropertyKey::status, (int)_status },
+        { ThingPropertyKey::power, (int)round(nrg[11]) },
         { ThingPropertyKey::voltage, voltage }
     });
 }

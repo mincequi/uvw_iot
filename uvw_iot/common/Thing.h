@@ -2,6 +2,7 @@
 
 #include <uvw_iot/common/Rpp.h>
 #include <uvw_iot/common/ThingProperty.h>
+#include <uvw_iot/common/ThingType.h>
 
 namespace uvw_iot {
 namespace common {
@@ -9,13 +10,17 @@ namespace common {
 class Thing {
 public:
     virtual const std::string& id() const = 0;
+    inline virtual ThingType type() const { return ThingType::Unknown; }
 
     virtual void getProperties();
     void setProperty(ThingPropertyKey key, const ThingPropertyValue& value);
+    void setProperties(const ThingPropertyMap& properties);
     dynamic_observable<ThingPropertyMap> propertiesObservable() const;
+    inline const ThingPropertyMap& properties() const { return _properties; }
 
 protected:
     Thing();
+    virtual ~Thing() = default;
 
     void publish(const ThingPropertyMap& properties);
     void close();

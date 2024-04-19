@@ -14,6 +14,12 @@ void Thing::setProperty(ThingPropertyKey key, const ThingPropertyValue& value) {
     onSetProperty(key, value);
 }
 
+void Thing::setProperties(const ThingPropertyMap& properties) {
+    publish(properties);
+    for (const auto& p : properties)
+        onSetProperty(p.first, p.second);
+}
+
 dynamic_observable<ThingPropertyMap> Thing::propertiesObservable() const {
     return _propertiesSubject.get_observable();
 }

@@ -10,7 +10,7 @@ namespace common {
 ThingRepository::ThingRepository() {
 }
 
-void ThingRepository::addThing(ThingPtr thing) {
+void ThingRepository::addThing(ThingPtr thing) const {
     if (_things.contains(thing->id())) return;
 
     auto it = _things[thing->id()] = thing;
@@ -40,8 +40,7 @@ dynamic_observable<std::string> ThingRepository::thingRemoved() const {
     return _thingRemoved.get_observable();
 }
 
-void ThingRepository::getProperties() {
-    // TODO: clear errornous things here
+void ThingRepository::getProperties() const {
     for (const auto& t : _things) {
         t.second->getProperties();
     }
@@ -49,6 +48,12 @@ void ThingRepository::getProperties() {
 
 dynamic_observable<std::pair<std::string, ThingPropertyMap>> ThingRepository::propertiesObservable() const {
     return _properties.get_observable();
+}
+
+void ThingRepository::setThingProperty(const std::string& id, ThingPropertyKey property, const ThingPropertyValue& value) const {
+    if (!_things.contains(id)) return;
+
+    _things.at(id)->setProperty(property, value);
 }
 
 } // namespace common

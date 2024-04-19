@@ -1,10 +1,14 @@
 #pragma once
 
 #include <uvw_iot/common/ThingStatus.h>
+#include <uvw_iot/common/ThingType.h>
+
 #include <uvw_iot/http/HttpThing.h>
 
 namespace uvw_iot {
 namespace goe {
+
+using uvw_iot::common::ThingType;
 
 class GoeCharger : public http::HttpThing {
 public:
@@ -12,6 +16,8 @@ public:
 
 private:
     using HttpThing::HttpThing;
+
+    inline ThingType type() const override { return ThingType::EvStation; }
 
     void getProperties() override;
     void onSetProperty(common::ThingPropertyKey key, const common::ThingPropertyValue& value) override;

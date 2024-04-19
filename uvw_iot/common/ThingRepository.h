@@ -9,15 +9,17 @@ class ThingRepository {
 public:
     ThingRepository();
 
-    void addThing(ThingPtr thing);
+    inline const std::map<std::string, ThingPtr>& things() const { return _things; }
+    void addThing(ThingPtr thing) const;
     dynamic_observable<ThingPtr> thingAdded() const;
     dynamic_observable<std::string> thingRemoved() const;
 
-    void getProperties();
+    void getProperties() const;
     dynamic_observable<std::pair<std::string, ThingPropertyMap>> propertiesObservable() const;
+    void setThingProperty(const std::string& id, ThingPropertyKey property, const ThingPropertyValue& value) const;
 
 private:
-    std::map<std::string, ThingPtr> _things;
+    mutable std::map<std::string, ThingPtr> _things;
     publish_subject<ThingPtr> _thingAdded;
     publish_subject<std::string> _thingRemoved;
     publish_subject<std::pair<std::string, ThingPropertyMap>> _properties;

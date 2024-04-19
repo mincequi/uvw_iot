@@ -49,7 +49,8 @@ enum class ThingPropertyKey : int8_t {
     max_value = 24
 };
 
-using ThingPropertyValue = std::variant<bool, int16_t, std::string, std::array<int16_t, 3>>;
+using ThingPropertyValue = std::variant<bool, int, std::string, std::array<int, 3>>;
+using ThingProperty = std::pair<ThingPropertyKey, ThingPropertyValue>;
 using ThingPropertyMap = std::map<ThingPropertyKey, ThingPropertyValue>;
 
 } // namespace common

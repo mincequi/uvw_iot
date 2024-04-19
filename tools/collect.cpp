@@ -28,7 +28,7 @@ std::ostream& operator<<(std::ostream& s, const uvw_iot::common::ThingPropertyMa
         s << k << ": ";
         std::visit([&](auto& arg) {
             using T = std::decay_t<decltype(arg)>;
-            if constexpr (std::is_same_v<T, std::array<int16_t, 3>>) {
+            if constexpr (std::is_same_v<T, std::array<int, 3>>) {
                 s << "[" << arg[0] << ", " << arg[1] << ", " << arg[2] << "]";
             } else {
                 s << arg;
@@ -42,11 +42,11 @@ std::ostream& operator<<(std::ostream& s, const uvw_iot::common::ThingPropertyMa
 
 int main() {
     ThingRepository thingRepository;
-    thingRepository.thingAdded().subscribe([](const ThingPtr& t) {
-        info("thing added> id: {}", t->id());
+    thingRepository.thingAdded().subscribe([&](const ThingPtr& t) {
+        info("thing added> id: {}, things count: {}", t->id(), thingRepository.things().size());
     });
-    thingRepository.thingRemoved().subscribe([](const std::string& id) {
-        info("thing removed> id: {}", id);
+    thingRepository.thingRemoved().subscribe([&](const std::string& id) {
+        info("thing removed> id: {}, things count: {}", id, thingRepository.things().size());
     });
     thingRepository.propertiesObservable().subscribe([&](const auto& t) {
         std::stringstream ss;
@@ -63,7 +63,8 @@ int main() {
 
     SunSpecDiscovery sunspecDiscovery;
     sunspecDiscovery.on<SunSpecClientPtr>([&](SunSpecClientPtr client, const SunSpecDiscovery&) {
-        thingRepository.addThing(std::make_shared<SunSpecThing>(client));
+        auto thing = std::make_shared<SunSpecThing>(client);
+        thingRepository.addThing(thing);
     });
 
     ModbusDiscovery modbusDiscovery;
