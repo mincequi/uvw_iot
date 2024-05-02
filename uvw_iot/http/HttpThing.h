@@ -1,11 +1,11 @@
 #pragma once
 
-#include <uvw_iot/common/Thing.h>
+#include <uvw_iot/Thing.h>
 
 namespace uvw_iot {
 namespace http {
 
-class HttpThing : public common::Thing {
+class HttpThing : public Thing {
 public:
     HttpThing(const std::string& host, uint16_t port = 80);
     // Note: this has to be defined for unique_ptr member.

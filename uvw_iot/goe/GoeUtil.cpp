@@ -3,8 +3,6 @@
 namespace uvw_iot {
 namespace goe {
 
-using uvw_iot::common::ThingStatus;
-
 ThingStatus toStatus(int v) {
     // api key "car"
     // carState, null if internal error (Unknown/Error=0, Idle=1, Charging=2, WaitCar=3, Complete=4, Error=5)

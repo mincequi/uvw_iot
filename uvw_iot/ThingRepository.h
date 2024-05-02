@@ -1,9 +1,8 @@
 #pragma once
 
-#include <uvw_iot/common/Thing.h>
+#include <uvw_iot/Thing.h>
 
 namespace uvw_iot {
-namespace common {
 
 class ThingRepository {
 public:
@@ -25,5 +24,4 @@ private:
     publish_subject<std::pair<std::string, ThingPropertyMap>> _properties;
 };
 
-} // namespace common
 } // namespace uvw_iot

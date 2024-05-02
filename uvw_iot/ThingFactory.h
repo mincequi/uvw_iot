@@ -1,9 +1,8 @@
 #pragma once
 
-#include <uvw_iot/common/Thing.h>
+#include <uvw_iot/Thing.h>
 
 namespace uvw_iot {
-namespace common {
 
 class ThingFactory {
 public:
@@ -13,6 +12,5 @@ private:
     ThingFactory();
 };
 
-} // namespace common
 } // namespace uvw_iot
 

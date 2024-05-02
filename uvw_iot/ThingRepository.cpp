@@ -5,7 +5,6 @@
 #include <uvw/timer.h>
 
 namespace uvw_iot {
-namespace common {
 
 ThingRepository::ThingRepository() {
 }
@@ -56,5 +55,4 @@ void ThingRepository::setThingProperty(const std::string& id, ThingPropertyKey p
     _things.at(id)->setProperty(property, value);
 }
 
-} // namespace common
 } // namespace uvw_iot

@@ -6,10 +6,11 @@ CPMAddPackage("gh:nlohmann/json@3.11.3")
 #add_subdirectory(goe)
 
 add_library(uvw_iot STATIC
-  common/Thing.cpp
-  common/ThingFactory.cpp
-  common/ThingRepository.cpp
-  common/Util.cpp
+  Site.cpp
+  Thing.cpp
+  ThingFactory.cpp
+  ThingRepository.cpp
+  Util.cpp
   goe/GoeCharger.cpp
   goe/GoeUtil.cpp
   http/HttpThing.cpp

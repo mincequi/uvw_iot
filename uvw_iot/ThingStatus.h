@@ -3,7 +3,6 @@
 #include <cstdint>
 
 namespace uvw_iot {
-namespace common {
 
 enum class ThingStatus : int16_t {
     unknown         = 0, //invalid
@@ -17,5 +16,4 @@ enum class ThingStatus : int16_t {
     service         = 8
 };
 
-} // namespace common
 } // namespace uvw_iot

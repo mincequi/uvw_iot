@@ -7,7 +7,6 @@
 #include <variant>
 
 namespace uvw_iot {
-namespace common {
 
 enum class ThingPropertyKey : int8_t {
     // custom properties - generic
@@ -53,5 +52,4 @@ using ThingPropertyValue = std::variant<bool, int, std::string, std::array<int, 
 using ThingProperty = std::pair<ThingPropertyKey, ThingPropertyValue>;
 using ThingPropertyMap = std::map<ThingPropertyKey, ThingPropertyValue>;
 
-} // namespace common
 } // namespace uvw_iot

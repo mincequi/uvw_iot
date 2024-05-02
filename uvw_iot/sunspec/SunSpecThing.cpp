@@ -1,6 +1,6 @@
 #include "SunSpecThing.h"
 
-#include <uvw_iot/common/Util.h>
+#include <uvw_iot/Util.h>
 #include <uvw_net/sunspec/SunSpecTypes.h>
 
 namespace uvw_iot {

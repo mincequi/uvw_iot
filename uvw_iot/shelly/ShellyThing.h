@@ -7,14 +7,14 @@ namespace shelly {
 
 class ShellyThing : public http::HttpThing {
 public:
-    static common::ThingPtr from(const std::string& host, uint16_t port);
+    static ThingPtr from(const std::string& host, uint16_t port);
 
 private:
     ShellyThing(const std::string& host, uint16_t port, bool isPm);
 
     // Thing overrides
     void getProperties() override;
-    void onSetProperty(common::ThingPropertyKey key, const common::ThingPropertyValue& value) override;
+    void onSetProperty(ThingPropertyKey key, const ThingPropertyValue& value) override;
 
     // HttpThing overrides
     void onBody(const std::string& body) override;

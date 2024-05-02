@@ -1,7 +1,6 @@
 #pragma once
 
 namespace uvw_iot {
-namespace common {
 
 enum class ThingType {
     Unknown = 0,
@@ -15,5 +14,4 @@ enum class ThingType {
     WeatherStation,
 };
 
-} // namespace common
 } // namespace uvw_iot

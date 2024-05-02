@@ -9,7 +9,6 @@ namespace uvw_iot {
 namespace shelly {
 
 using json = nlohmann::json;
-using namespace uvw_iot::common;
 
 ShellyThing::ShellyThing(const std::string& host, uint16_t port, bool isPm) :
     HttpThing(host),

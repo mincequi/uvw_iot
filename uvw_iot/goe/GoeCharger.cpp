@@ -10,7 +10,6 @@ namespace uvw_iot {
 namespace goe {
 
 using json = nlohmann::json;
-using namespace uvw_iot::common;
 
 ThingPtr GoeCharger::from(const std::string& host, uint16_t port) {
     if (std::regex_match(host, std::regex("go-echarger_\\d{6}"))) {

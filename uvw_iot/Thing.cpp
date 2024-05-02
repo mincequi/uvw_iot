@@ -1,7 +1,6 @@
 #include "Thing.h"
 
 namespace uvw_iot {
-namespace common {
 
 Thing::Thing() {
 }
@@ -37,5 +36,4 @@ void Thing::close() {
      _propertiesSubject.get_observer().on_completed();
 }
 
-} // namespace common
 } // namespace uvw_iot

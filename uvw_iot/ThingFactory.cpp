@@ -4,7 +4,6 @@
 #include <uvw_iot/shelly/ShellyThing.h>
 
 namespace uvw_iot {
-namespace common {
 
 ThingPtr ThingFactory::from(const std::string& host) {
     ThingPtr thing;
@@ -20,5 +19,4 @@ ThingPtr ThingFactory::from(const std::string& host) {
 ThingFactory::ThingFactory() {
 }
 
-} // namespace common
 } // namespace uvw_iot

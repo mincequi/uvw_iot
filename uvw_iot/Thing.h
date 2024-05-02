@@ -1,11 +1,10 @@
 #pragma once
 
-#include <uvw_iot/common/Rpp.h>
-#include <uvw_iot/common/ThingProperty.h>
-#include <uvw_iot/common/ThingType.h>
+#include <uvw_iot/Rpp.h>
+#include <uvw_iot/ThingProperty.h>
+#include <uvw_iot/ThingType.h>
 
 namespace uvw_iot {
-namespace common {
 
 class Thing {
 public:
@@ -36,5 +35,4 @@ private:
 
 using ThingPtr = std::shared_ptr<Thing>;
 
-} // namespace common
 } // namespace uvw_iot

@@ -7,23 +7,24 @@
 #include <spdlog/fmt/ostr.h>
 
 #include <uvw/timer.h>
-#include <uvw_iot/common/ThingFactory.h>
-#include <uvw_iot/common/ThingProperty.h>
-#include <uvw_iot/common/ThingRepository.h>
+#include <uvw_iot/Site.h>
+#include <uvw_iot/ThingFactory.h>
+#include <uvw_iot/ThingProperty.h>
+#include <uvw_iot/ThingRepository.h>
 #include <uvw_iot/sunspec/SunSpecThing.h>
 #include <uvw_net/dns_sd/DnsServiceDiscovery.h>
 #include <uvw_net/modbus/ModbusDiscovery.h>
 #include <uvw_net/sunspec/SunSpecDiscovery.h>
 
 using namespace spdlog;
-using namespace uvw_iot::common;
+using namespace uvw_iot;
 using namespace uvw_iot::sunspec;
 using namespace uvw_net::dns_sd;
 using namespace uvw_net::modbus;
 using namespace uvw_net::sunspec;
 
 using magic_enum::iostream_operators::operator<<;
-std::ostream& operator<<(std::ostream& s, const uvw_iot::common::ThingPropertyMap& map) {
+std::ostream& operator<<(std::ostream& s, const uvw_iot::ThingPropertyMap& map) {
     for (const auto& [k, v] : map) {
         s << k << ": ";
         std::visit([&](auto& arg) {
@@ -51,7 +52,12 @@ int main() {
     thingRepository.propertiesObservable().subscribe([&](const auto& t) {
         std::stringstream ss;
         ss << t.second;
-        info("{}> properties updated> {}", t.first, ss.str());
+        info("{}> {}", t.first, ss.str());
+    });
+
+    Site site(thingRepository);
+    site.properties().subscribe([&](const Site::Properties& p) {
+        info("site> gridPower: {}, pvPower: {}", p.gridPower, p.pvPower);
     });
 
     DnsServiceDiscovery dnsDiscovery;
