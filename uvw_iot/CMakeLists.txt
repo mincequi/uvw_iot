@@ -1,8 +1,3 @@
-CPMAddPackage("gh:mincequi/uvw_net@0.1.1")
-CPMAddPackage("gh:victimsnino/ReactivePlusPlus@2.1.1")
-#CPMAddPackage("gh:victimsnino/ReactivePlusPlus#bebc5b8")
-CPMAddPackage("gh:nlohmann/json@3.11.3")
-
 #add_subdirectory(goe)
 
 add_library(uvw_iot STATIC

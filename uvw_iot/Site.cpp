@@ -18,7 +18,7 @@ Site::Site(const ThingRepository& repo, const SiteConfig& cfg) : _repo(repo), _c
                 | subscribe([this](const auto& power) {
                       _gridPower.get_observer().on_next(power);
                   });
-        } else if (thing->type() == ThingType::SolarInverter && (_cfg.pvMeters.contains(thing->id()) || _cfg.pvMeters.empty())) {
+        } else if (thing->type() == ThingType::SolarInverter && (_cfg.pvMeters.empty() || _cfg.pvMeters.contains(thing->id()))) {
             thing->propertiesObservable()
                 | filter([thing](const auto& p) { return p.count(ThingPropertyKey::power); })
                 | map([thing](const auto& p) { return std::make_pair(thing->id(), std::get<int>(p.at(ThingPropertyKey::power))); })

@@ -35,7 +35,7 @@ public:
 
 private:
     const ThingRepository& _repo;
-    const SiteConfig& _cfg;
+    const SiteConfig _cfg;
 
     publish_subject<int> _gridPower;
     publish_subject<std::pair<std::string, int>> _pvPowers;

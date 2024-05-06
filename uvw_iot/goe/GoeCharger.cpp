@@ -29,14 +29,12 @@ void GoeCharger::onSetProperty(ThingPropertyKey key, const ThingPropertyValue& v
                 if (arg == 0) {
                     set("/api/set?frc=1");
                 } else {
-                    set("/api/set?psm=1"); // force 1 phase
-                    set("/api/set?amp=" + std::to_string(std::clamp(arg, 6, 32)));
-                    set("/api/set?frc=2"); // switch on
+                    const std::string command = "/api/set?psm=1&frc=2&amp=" + std::to_string(std::clamp(arg, 6, 32));
+                    set(command);
                 }
             } else if constexpr (std::is_same_v<T, std::array<int, 3>>) {
-                set("/api/set?psm=2"); // force 3 phase
-                set("/api/set?amp=" + std::to_string(std::clamp(arg.front(), 6, 32)));
-                set("/api/set?frc=2");
+                const std::string command = "/api/set?psm=2&frc=2&amp=" + std::to_string(std::clamp(arg.front(), 6, 32));
+                set(command);
             }
         }, value);
         break;
