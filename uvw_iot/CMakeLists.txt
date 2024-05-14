@@ -1,6 +1,7 @@
 #add_subdirectory(goe)
 
 add_library(uvw_iot STATIC
+  MultiThing.cpp
   Site.cpp
   Thing.cpp
   ThingFactory.cpp
@@ -11,6 +12,7 @@ add_library(uvw_iot STATIC
   http/HttpThing.cpp
   shelly/ShellyThing.cpp
   sunspec/SunSpecThing.cpp
+  MultiThing.h MultiThing.cpp
 )
 
 target_link_libraries(uvw_iot

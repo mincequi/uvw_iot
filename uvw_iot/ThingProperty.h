@@ -13,8 +13,6 @@ enum class ThingPropertyKey : int8_t {
     timestamp = -1,
 
     // custom properties - things
-    //on = -8,
-    //off = -9,
     name = -2,
     pinned = -3,
     status = -4,
@@ -30,7 +28,7 @@ enum class ThingPropertyKey : int8_t {
     // custom properties - site
     pv_power = -22,
     grid_power = -23,
-    //site_power = -24,
+    smoothed_grid_power = -24,
 
     min_value = -25,
 
