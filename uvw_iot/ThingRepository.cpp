@@ -49,6 +49,12 @@ dynamic_observable<std::pair<std::string, ThingPropertyMap>> ThingRepository::pr
     return _properties.get_observable();
 }
 
+void ThingRepository::setThingProperties(const std::string& id, const ThingPropertyMap& properties) const {
+    if (!_things.contains(id)) return;
+
+    _things.at(id)->setProperties(properties);
+}
+
 void ThingRepository::setThingProperty(const std::string& id, ThingPropertyKey property, const ThingPropertyValue& value) const {
     if (!_things.contains(id)) return;
 

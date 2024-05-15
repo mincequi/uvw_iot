@@ -1,12 +1,11 @@
 #include "SunSpecThing.h"
 
-#include <uvw_iot/Util.h>
+#include <uvw_iot/util/Util.h>
 #include <uvw_net/sunspec/SunSpecTypes.h>
 
 namespace uvw_iot {
 namespace sunspec {
 
-using namespace uvw_iot::common;
 using namespace uvw_net::sunspec;
 
 SunSpecThing::SunSpecThing(SunSpecClientPtr client) :

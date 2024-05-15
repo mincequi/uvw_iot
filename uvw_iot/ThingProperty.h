@@ -9,6 +9,8 @@
 namespace uvw_iot {
 
 enum class ThingPropertyKey : int8_t {
+    min_value = -24,
+
     // custom properties - generic
     timestamp = -1,
 
@@ -24,13 +26,13 @@ enum class ThingPropertyKey : int8_t {
     offset = -16,
     thing_interval = -17,
     time_constant = -18,
+    countdown = -19,
 
     // custom properties - site
-    pv_power = -22,
-    grid_power = -23,
-    smoothed_grid_power = -24,
-
-    min_value = -25,
+    pv_power = -20,
+    grid_power = -21,
+    short_term_grid_power = -22,
+    long_term_grid_power = -23,
 
     // ipso properties
     generic_sensor = 0,
@@ -38,6 +40,9 @@ enum class ThingPropertyKey : int8_t {
     power = 5,
     actuation = 6,
     power_control = 12,
+
+    phases = 13,
+    next_phases = 14,
 
     // ipso properties - not meant for export
     voltage = 16, // Only object, no reusable object

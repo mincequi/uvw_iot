@@ -2,11 +2,11 @@
 
 #include <numeric>
 
-#include <uvw_iot/ThingRepository.h>
-
 #include <uvw_iot/RppUvw.h>
+#include <uvw_iot/ThingRepository.h>
+#include <uvw_iot/util/Filter.h>
 
-namespace uvw_iot {
+namespace uvw_iot::util {
 
 Site::Site(const ThingRepository& repo, const SiteConfig& cfg) : _repo(repo), _cfg(cfg) {
     _repo.thingAdded().subscribe([this](ThingPtr thing) {
@@ -37,13 +37,17 @@ Site::Site(const ThingRepository& repo, const SiteConfig& cfg) : _repo(repo), _c
         | subscribe(_pvPower.get_observer());
 
     _pvPower.get_observable()
-        | combine_latest([](int pvPower, int gridPower) {
+        | combine_latest([this](int pvPower, int gridPower) {
               const auto now = std::chrono::system_clock::now();
               const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
               return Site::Properties { (int)seconds, pvPower, gridPower };
           }, _gridPower.get_observable())
         | debounce(_cfg.debounceTime, rpp_uvw::schedulers::main_thread_scheduler{})
-//        | observe_on(rpp_uvw::schedulers::main_thread_scheduler{})
+        | scan(Site::Properties(), [this](Site::Properties&& prev, const Site::Properties& curr) {
+              ema(prev.shortTermGridPower, curr.gridPower, std::chrono::milliseconds((curr.ts - prev.ts) * 1000), _cfg.shortTermTau);
+              ema(prev.longTermGridPower, curr.gridPower, std::chrono::milliseconds((curr.ts - prev.ts) * 1000),  _cfg.longTermTau);
+              return std::move(Site::Properties{curr.ts, curr.pvPower, curr.gridPower, prev.shortTermGridPower, prev.longTermGridPower});
+          })
         | subscribe(_properties.get_observer());
 
     // Init with zero power
@@ -70,4 +74,4 @@ const std::list<Site::Properties>& Site::history() const {
     return _history;
 }
 
-} // namespace uvw_iot
+} // namespace uvw_iot::util

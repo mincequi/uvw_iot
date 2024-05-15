@@ -1,18 +1,18 @@
 #add_subdirectory(goe)
 
 add_library(uvw_iot STATIC
-  MultiThing.cpp
-  Site.cpp
   Thing.cpp
   ThingFactory.cpp
   ThingRepository.cpp
-  Util.cpp
   goe/GoeCharger.cpp
   goe/GoeUtil.cpp
   http/HttpThing.cpp
   shelly/ShellyThing.cpp
   sunspec/SunSpecThing.cpp
-  MultiThing.h MultiThing.cpp
+  util/Filter.cpp
+  util/MultiThing.cpp
+  util/Site.cpp
+  util/Util.cpp
 )
 
 target_link_libraries(uvw_iot

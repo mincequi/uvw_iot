@@ -1,11 +1,11 @@
 #include "Util.h"
 
 namespace uvw_iot {
-namespace common {
+namespace util {
 
-int Util::divAndRound(int dividend, int divisor) {
+int divAndRound(int dividend, int divisor) {
     return (dividend >= 0) ? (dividend + divisor/2)/divisor : (dividend - divisor/2)/divisor;
 }
 
-} // namespace common
+} // namespace util
 } // namespace uvw_iot

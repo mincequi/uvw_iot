@@ -15,6 +15,7 @@ public:
 
     void getProperties() const;
     dynamic_observable<std::pair<std::string, ThingPropertyMap>> propertiesObservable() const;
+    void setThingProperties(const std::string& id, const ThingPropertyMap& properties) const;
     void setThingProperty(const std::string& id, ThingPropertyKey property, const ThingPropertyValue& value) const;
 
 private:
