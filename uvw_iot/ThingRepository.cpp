@@ -24,6 +24,7 @@ void ThingRepository::addThing(ThingPtr thing) const {
             auto timer = uvw::loop::get_default()->resource<uvw::timer_handle>();
             timer->on<uvw::timer_event>([this, id](auto&, auto&) {
                 _thingRemoved.get_observer().on_next(id);
+                if (_things.contains(id)) _things.at(id)->disconnect();
                 _things.erase(id);
             });
             timer->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{0});

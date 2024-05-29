@@ -16,6 +16,7 @@ public:
 private:
     const std::string& id() const override;
     ThingType type() const override;
+    void disconnect() override;
 
     void getProperties() override;
 

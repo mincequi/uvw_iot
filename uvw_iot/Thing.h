@@ -11,6 +11,8 @@ public:
     virtual const std::string& id() const = 0;
     inline virtual ThingType type() const { return ThingType::Unknown; }
 
+    inline virtual void disconnect() {}
+
     virtual void getProperties();
     void setProperty(ThingPropertyKey key, const ThingPropertyValue& value);
     void setProperties(const ThingPropertyMap& properties);

@@ -70,6 +70,10 @@ ThingType SunSpecThing::type() const {
     return _type;
 }
 
+void SunSpecThing::disconnect() {
+    _client->disconnect();
+}
+
 void SunSpecThing::getProperties() {
     // TODO: implement real timeout. This only increments the error count.
     ++_errorCount;
