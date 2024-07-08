@@ -15,3 +15,6 @@ CPMAddPackage("gh:nlohmann/json@3.11.3")
 
 add_subdirectory(uvw_iot)
 add_subdirectory(tools)
+# Add tests
+enable_testing()
+add_subdirectory(tests)
