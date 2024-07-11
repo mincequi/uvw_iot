@@ -26,6 +26,7 @@ private:
 
     std::string _host;
     uint16_t _port = 80;
+    std::string _id;
     size_t _errorCount = 0;
 };
 

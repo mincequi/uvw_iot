@@ -37,13 +37,18 @@ HttpThing::HttpThing(const std::string& host, uint16_t port) :
     });
     d->setClient.on<HttpResponse>([this](const HttpResponse&, const HttpClient&) {
     });
+
+    // set _id to host as lowercase and replace - with _
+    _id = host;
+    std::transform(_id.begin(), _id.end(), _id.begin(), ::tolower);
+    std::replace(_id.begin(), _id.end(), '-', '_');
 }
 
 HttpThing::~HttpThing() {
 }
 
 const std::string& HttpThing::id() const {
-    return host();
+    return _id;
 }
 
 const std::string& HttpThing::host() const {
