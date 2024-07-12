@@ -5,6 +5,8 @@
 #include <uvw/loop.h>
 #include <uvw/timer.h>
 
+using namespace std::chrono_literals;
+
 namespace rpp_uvw::schedulers {
 
 class main_thread_scheduler final {
@@ -20,7 +22,7 @@ private:
                 handle.stop();
                 handle.close();
             });
-            timer->start(std::chrono::duration_cast<std::chrono::milliseconds>(duration), uvw::timer_handle::time{0});
+            timer->start(std::max(std::chrono::duration_cast<std::chrono::milliseconds>(duration), 0ms), uvw::timer_handle::time{0});
         }
 
         static constexpr rpp::schedulers::details::none_disposable get_disposable() { return {}; }
