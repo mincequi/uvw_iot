@@ -11,7 +11,7 @@ include(cmake/CPM.cmake)
 CPMAddPackage("gh:mincequi/uvw_net#8551d4c")
 CPMAddPackage("gh:victimsnino/ReactivePlusPlus@2.2.2")
 #CPMAddPackage("gh:victimsnino/ReactivePlusPlus#bebc5b8")
-CPMAddPackage("gh:nlohmann/json@3.11.3")
+CPMAddPackage("gh:nlohmann/json@3.12.0")
 
 add_subdirectory(uvw_iot)
 add_subdirectory(tools)
