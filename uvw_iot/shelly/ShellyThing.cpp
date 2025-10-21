@@ -30,15 +30,17 @@ void ShellyThing::getProperties() {
     get("/status");
 }
 
-void ShellyThing::onSetProperty(ThingPropertyKey key, const ThingPropertyValue& value) {
-    switch (key) {
-    case ThingPropertyKey::power_control: {
-        const std::string strValue = std::get<bool>(value) ? "on" : "off";
-        set("/relay/0?turn=" + strValue);
-        break;
-    }
-    default:
-        break;
+void ShellyThing::onSetProperties(const ThingPropertyMap& properties) {
+    for (const auto& p : properties) {
+        switch (p.first) {
+        case ThingPropertyKey::power_control: {
+            const std::string strValue = std::get<bool>(p.second) ? "on" : "off";
+            set("/relay/0?turn=" + strValue);
+            break;
+        }
+        default:
+            break;
+        }
     }
 }
 

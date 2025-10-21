@@ -26,7 +26,7 @@ protected:
     void publish(const ThingPropertyMap& properties);
     void close();
 
-    virtual void onSetProperty(ThingPropertyKey key, const ThingPropertyValue& value);
+    virtual void onSetProperties(const ThingPropertyMap& properties);
 
 private:
     ThingPropertyMap _properties;

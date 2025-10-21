@@ -18,28 +18,33 @@ ThingPtr GoeCharger::from(const std::string& host, uint16_t port) {
     return nullptr;
 }
 
-void GoeCharger::onSetProperty(ThingPropertyKey key, const ThingPropertyValue& value) {
+void GoeCharger::onSetProperties(const ThingPropertyMap& properties) {
     if (_status != ThingStatus::waiting && _status != ThingStatus::charging) return;
 
-    switch (key) {
-    case ThingPropertyKey::current:
-        std::visit([&](auto&& arg) {
-            using T = std::decay_t<decltype(arg)>;
-            if constexpr (std::is_same_v<T, int>) {
-                if (arg == 0) {
-                    set("/api/set?frc=1");
-                } else {
-                    const std::string command = "/api/set?psm=1&frc=2&amp=" + std::to_string(std::clamp(arg, 6, 32));
-                    set(command);
+    std::optional<std::string> command = std::nullopt;
+    for (const auto& p : properties) {
+        switch (p.first) {
+        case ThingPropertyKey::current:
+            std::visit([&](auto&& arg) {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (std::is_same_v<T, int>) {
+                    if (arg == 0) {
+                        command = "/api/set?psm=1&frc=1&amp=6";
+                    } else {
+                        command = "/api/set?psm=1&frc=2&amp=" + std::to_string(std::clamp(arg, 6, 32));
+                    }
+                } else if constexpr (std::is_same_v<T, std::array<int, 3>>) {
+                    command = "/api/set?psm=2&frc=2&amp=" + std::to_string(std::clamp(arg.front(), 6, 32));
                 }
-            } else if constexpr (std::is_same_v<T, std::array<int, 3>>) {
-                const std::string command = "/api/set?psm=2&frc=2&amp=" + std::to_string(std::clamp(arg.front(), 6, 32));
-                set(command);
-            }
-        }, value);
-        break;
-    default:
-        break;
+            }, p.second);
+            break;
+        default:
+            break;
+        }
+    }
+
+    if (command.has_value()) {
+        set(command.value());
     }
 }
 

@@ -14,7 +14,7 @@ private:
 
     // Thing overrides
     void getProperties() override;
-    void onSetProperty(ThingPropertyKey key, const ThingPropertyValue& value) override;
+    void onSetProperties(const ThingPropertyMap& properties) override;
 
     // HttpThing overrides
     void onBody(const std::string& body) override;
