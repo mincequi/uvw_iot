@@ -28,8 +28,8 @@ public:
         int ts = 0;
         int pvPower = 0;
         int gridPower = 0;
-        int shortTermGridPower = 0;
-        int longTermGridPower = 0;
+        double shortTermGridPower = 0.0;
+        double longTermGridPower = 0.0;
     };
 
     Site(const ThingRepository& repo, const SiteConfig& cfg = {});
