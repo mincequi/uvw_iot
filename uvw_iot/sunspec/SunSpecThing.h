@@ -18,7 +18,7 @@ private:
     ThingType type() const override;
     void disconnect() override;
 
-    void getProperties() override;
+    void fetchProperties() override;
 
     SunSpecClientPtr _client;
     ThingType _type = ThingType::Unknown;

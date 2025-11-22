@@ -13,15 +13,15 @@ Site::Site(const ThingRepository& repo, const SiteConfig& cfg) : _repo(repo), _c
         // If we configured this meter for site (or there is no explicit config)
         if (thing->type() == ThingType::SmartMeter && (_cfg.gridMeter == thing->id() || _cfg.gridMeter.empty())) {
             thing->propertiesObservable()
-                | filter([&](const auto& p) { return p.count(ThingPropertyKey::power); })
-                | map([&](const auto& p) { return std::get<int>(p.at(ThingPropertyKey::power)); })
+                | filter([&](const auto& p) { return p.template contains<ThingPropertyKey::power>(); })
+                | map([&](const auto& p) { return *(p.template get<ThingPropertyKey::power>()); })
                 | subscribe([this](const auto& power) {
                       _gridPower.get_observer().on_next(power);
                   });
         } else if (thing->type() == ThingType::SolarInverter && (_cfg.pvMeters.empty() || _cfg.pvMeters.contains(thing->id()))) {
             thing->propertiesObservable()
-                | filter([thing](const auto& p) { return p.count(ThingPropertyKey::power); })
-                | map([thing](const auto& p) { return std::make_pair(thing->id(), std::get<int>(p.at(ThingPropertyKey::power))); })
+                | filter([thing](const auto& p) { return p.template contains<ThingPropertyKey::power>(); })
+                | map([thing](const auto& p) { return std::make_pair(thing->id(), *(p.template get<ThingPropertyKey::power>())); })
                 | subscribe([this](const auto& power) {
                       _pvPowers.get_observer().on_next(power);
                   });

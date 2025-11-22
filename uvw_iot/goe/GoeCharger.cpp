@@ -22,6 +22,22 @@ void GoeCharger::onSetProperties(const ThingPropertyMap& properties) {
     if (_status != ThingStatus::waiting && _status != ThingStatus::charging) return;
 
     std::optional<std::string> command = std::nullopt;
+    properties.on<ThingPropertyKey::current>([&](const auto& value) {
+        std::visit([&](auto&& arg) {
+            using T = std::decay_t<decltype(arg)>;
+            if constexpr (std::is_same_v<T, int>) {
+                if (arg == 0) {
+                    command = "/api/set?psm=1&frc=1&amp=6";
+                } else {
+                    command = "/api/set?psm=1&frc=2&amp=" + std::to_string(std::clamp(arg, 6, 32));
+                }
+            } else if constexpr (std::is_same_v<T, std::array<int, 3>>) {
+                command = "/api/set?psm=2&frc=2&amp=" + std::to_string(std::clamp(arg.front(), 6, 32));
+            }
+        }, value);
+    });
+
+    /*
     for (const auto& p : properties) {
         switch (p.first) {
         case ThingPropertyKey::current:
@@ -42,13 +58,14 @@ void GoeCharger::onSetProperties(const ThingPropertyMap& properties) {
             break;
         }
     }
+*/
 
     if (command.has_value()) {
         set(command.value());
     }
 }
 
-void GoeCharger::getProperties() {
+void GoeCharger::fetchProperties() {
     // alw,car,eto,nrg,wh,trx,cards"
     get("/api/status?filter=nrg,car"); // psm (for phases) and amp (for amps)
 }
@@ -67,11 +84,12 @@ void GoeCharger::onBody(const std::string& body) {
 
     _status = goe::toStatus(doc["car"].get<int>());
 
-    publish({
-        { ThingPropertyKey::status, (int)_status },
-        { ThingPropertyKey::power, (int)round(nrg[11]) },
-        { ThingPropertyKey::voltage, voltage }
-    });
+    ThingPropertyMap properties;
+    properties.set<ThingPropertyKey::status>((int)_status);
+    properties.set<ThingPropertyKey::power>((int)round(nrg[11]));
+    properties.set<ThingPropertyKey::voltage>(voltage);
+
+    publish(properties);
 }
 
 } // namespace goe

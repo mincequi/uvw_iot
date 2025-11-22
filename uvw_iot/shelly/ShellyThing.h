@@ -13,7 +13,7 @@ private:
     ShellyThing(const std::string& host, uint16_t port, bool isPm);
 
     // Thing overrides
-    void getProperties() override;
+    void fetchProperties() override;
     void onSetProperties(const ThingPropertyMap& properties) override;
 
     // HttpThing overrides

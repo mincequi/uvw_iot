@@ -17,7 +17,7 @@ private:
 
     inline ThingType type() const override { return ThingType::EvStation; }
 
-    void getProperties() override;
+    void fetchProperties() override;
     void onSetProperties(const ThingPropertyMap& properties) override;
 
     // HttpThing overrides
