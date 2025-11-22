@@ -13,8 +13,7 @@ public:
 
     inline virtual void disconnect() {}
 
-    virtual void getProperties();
-    void setProperty(ThingPropertyKey key, const ThingPropertyValue& value);
+    virtual void fetchProperties() {}
     void setProperties(const ThingPropertyMap& properties);
     dynamic_observable<ThingPropertyMap> propertiesObservable() const;
     inline const ThingPropertyMap& properties() const { return _properties; }
@@ -26,7 +25,7 @@ protected:
     void publish(const ThingPropertyMap& properties);
     void close();
 
-    virtual void onSetProperties(const ThingPropertyMap& properties);
+    virtual void onSetProperties(const ThingPropertyMap&) {}
 
 private:
     ThingPropertyMap _properties;

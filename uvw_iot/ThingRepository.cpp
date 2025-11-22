@@ -40,9 +40,9 @@ dynamic_observable<std::string> ThingRepository::thingRemoved() const {
     return _thingRemoved.get_observable();
 }
 
-void ThingRepository::getProperties() const {
+void ThingRepository::fetchProperties() const {
     for (const auto& t : _things) {
-        t.second->getProperties();
+        t.second->fetchProperties();
     }
 }
 
@@ -56,10 +56,12 @@ void ThingRepository::setThingProperties(const std::string& id, const ThingPrope
     _things.at(id)->setProperties(properties);
 }
 
+/*
 void ThingRepository::setThingProperty(const std::string& id, ThingPropertyKey property, const ThingPropertyValue& value) const {
     if (!_things.contains(id)) return;
 
     _things.at(id)->setProperty(property, value);
 }
+*/
 
 } // namespace uvw_iot

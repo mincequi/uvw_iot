@@ -20,26 +20,19 @@ ThingPtr GoeCharger::from(const std::string& host, uint16_t port) {
 
 void GoeCharger::onSetProperties(const ThingPropertyMap& properties) {
     if (_status != ThingStatus::waiting && _status != ThingStatus::charging) return;
+    const auto current = properties.get<ThingPropertyKey::current>();
+    const auto phases = properties.get<ThingPropertyKey::phases>();
+
+    if (!current || !phases) return;
 
     std::optional<std::string> command = std::nullopt;
-    for (const auto& p : properties) {
-        switch (p.first) {
-        case ThingPropertyKey::current:
-            std::visit([&](auto&& arg) {
-                using T = std::decay_t<decltype(arg)>;
-                if constexpr (std::is_same_v<T, int>) {
-                    if (arg == 0) {
-                        command = "/api/set?psm=1&frc=1&amp=6";
-                    } else {
-                        command = "/api/set?psm=1&frc=2&amp=" + std::to_string(std::clamp(arg, 6, 32));
-                    }
-                } else if constexpr (std::is_same_v<T, std::array<int, 3>>) {
-                    command = "/api/set?psm=2&frc=2&amp=" + std::to_string(std::clamp(arg.front(), 6, 32));
-                }
-            }, p.second);
-            break;
-        default:
-            break;
+    if (*current == 0) {
+        command = "/api/set?psm=1&frc=1&amp=6";
+    } else {
+        if (*phases == 1) {
+            command = "/api/set?psm=1&frc=2&amp=" + std::to_string(std::clamp(*current, 6, 32));
+        } else if (*phases == 3) {
+            command = "/api/set?psm=2&frc=2&amp=" + std::to_string(std::clamp(*current, 6, 32));
         }
     }
 
@@ -48,7 +41,7 @@ void GoeCharger::onSetProperties(const ThingPropertyMap& properties) {
     }
 }
 
-void GoeCharger::getProperties() {
+void GoeCharger::fetchProperties() {
     // alw,car,eto,nrg,wh,trx,cards"
     get("/api/status?filter=nrg,car"); // psm (for phases) and amp (for amps)
 }
@@ -67,11 +60,12 @@ void GoeCharger::onBody(const std::string& body) {
 
     _status = goe::toStatus(doc["car"].get<int>());
 
-    publish({
-        { ThingPropertyKey::status, (int)_status },
-        { ThingPropertyKey::power, (int)round(nrg[11]) },
-        { ThingPropertyKey::voltage, voltage }
-    });
+    ThingPropertyMap properties;
+    properties.set<ThingPropertyKey::status>((int)_status);
+    properties.set<ThingPropertyKey::power>((int)round(nrg[11]));
+    properties.set<ThingPropertyKey::voltage>(voltage);
+
+    publish(properties);
 }
 
 } // namespace goe

@@ -28,18 +28,19 @@ using namespace uvw_net::sunspec;
 
 using magic_enum::iostream_operators::operator<<;
 std::ostream& operator<<(std::ostream& s, const uvw_iot::ThingPropertyMap& map) {
-    for (const auto& [k, v] : map) {
+    //for (const auto& [k, v] : map) {
+    map.forEach([&](const ThingPropertyKey k, const auto& v) {
         s << k << ": ";
-        std::visit([&](auto& arg) {
-            using T = std::decay_t<decltype(arg)>;
-            if constexpr (std::is_same_v<T, std::array<int, 3>>) {
-                s << "[" << arg[0] << ", " << arg[1] << ", " << arg[2] << "]";
-            } else {
-                s << arg;
-            }
-        }, v);
+        // Check for type of v and then format accordingly
+        using T = std::decay_t<decltype(v)>;
+        if constexpr (std::is_same_v<T, std::array<int, 3>>) {
+            s << "[" << v[0] << ", " << v[1] << ", " << v[2] << "]";
+        } else {
+            s << v;
+        }
+
         s << ", ";
-    }
+    });
 
     return s;
 }
@@ -94,7 +95,7 @@ int main() {
     // Start a read timer
     auto readTimer = uvw::loop::get_default()->resource<uvw::timer_handle>();
     readTimer->on<uvw::timer_event>([&](const auto&, auto&) {
-        thingRepository.getProperties();
+        thingRepository.fetchProperties();
     });
     readTimer->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{3000});
 

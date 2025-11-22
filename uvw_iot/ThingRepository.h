@@ -13,10 +13,10 @@ public:
     dynamic_observable<ThingPtr> thingAdded() const;
     dynamic_observable<std::string> thingRemoved() const;
 
-    void getProperties() const;
+    void fetchProperties() const;
     dynamic_observable<std::pair<std::string, ThingPropertyMap>> propertiesObservable() const;
     void setThingProperties(const std::string& id, const ThingPropertyMap& properties) const;
-    void setThingProperty(const std::string& id, ThingPropertyKey property, const ThingPropertyValue& value) const;
+    //void setThingProperty(const std::string& id, ThingPropertyKey property, const ThingPropertyValue& value) const;
 
 private:
     mutable std::map<std::string, ThingPtr> _things;

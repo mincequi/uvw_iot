@@ -47,10 +47,10 @@ SunSpecThing::SunSpecThing(SunSpecClientPtr client) :
         for (const auto& v : model.values()) {
             switch (v.first) {
             case DataPoint::totalActiveAcPower:
-                props[ThingPropertyKey::power] = std::get<int>(v.second);
+                props.set<ThingPropertyKey::power>(std::get<int>(v.second));
                 break;
             case DataPoint::operatingStatus:
-                props[ThingPropertyKey::status] = (int)std::get<InverterOperatingStatus>(v.second);
+                props.set<ThingPropertyKey::status>((int)std::get<InverterOperatingStatus>(v.second));
             default:
                 break;
             }
@@ -74,7 +74,7 @@ void SunSpecThing::disconnect() {
     _client->disconnect();
 }
 
-void SunSpecThing::getProperties() {
+void SunSpecThing::fetchProperties() {
     // TODO: implement real timeout. This only increments the error count.
     ++_errorCount;
     if (_errorCount > 5) close();
