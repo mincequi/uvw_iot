@@ -65,9 +65,11 @@ int main() {
         info("site> shortTermGridPower: {}, longTermGridPower: {}", p.shortTermGridPower, p.longTermGridPower);
     });
 
-    DnsServiceDiscovery dnsDiscovery;
-    dnsDiscovery.on<DnsRecordDataSrv>([&](const DnsRecordDataSrv& data, const DnsServiceDiscovery&) {
-        const auto host = data.target.substr(0, data.target.find("."));
+    DnsServiceDiscovery dnsDiscovery("_http._tcp.local");
+    dnsDiscovery.on<MdnsResponse>([&](const MdnsResponse& data, const DnsServiceDiscovery&) {
+        if (!data.srvData) return;
+
+        const auto host = data.srvData->target;
         auto thing = ThingFactory::from(host);
         if (thing) thingRepository.addThing(thing);
     });
@@ -87,7 +89,7 @@ int main() {
     auto discoveryTimer = uvw::loop::get_default()->resource<uvw::timer_handle>();
     discoveryTimer->on<uvw::timer_event>([&](const auto&, auto&) {
         info("start discoveries>");
-        dnsDiscovery.discover("_http._tcp.local");
+        dnsDiscovery.discover();
         modbusDiscovery.discover();
     });
     discoveryTimer->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{30000});
