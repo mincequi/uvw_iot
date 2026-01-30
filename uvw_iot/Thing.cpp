@@ -16,6 +16,8 @@ dynamic_observable<ThingPropertyMap> Thing::propertiesObservable() const {
 
 
 void Thing::publish(const ThingPropertyMap& properties) {
+    _lastSeen = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
     _properties.assignFrom(properties);
     _propertiesSubject.get_observer().on_next(properties);
 }

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(uvw_iot LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(cmake/CPM.cmake)
@@ -11,6 +11,7 @@ CPMAddPackage("gh:mincequi/uvw_net#22ea79a")
 CPMAddPackage("gh:victimsnino/ReactivePlusPlus@2.2.2")
 #CPMAddPackage("gh:victimsnino/ReactivePlusPlus#bebc5b8")
 CPMAddPackage("gh:nlohmann/json@3.12.0")
+CPMAddPackage("gh:getml/reflect-cpp#v0.23.0")
 
 add_subdirectory(uvw_iot)
 add_subdirectory(tools)

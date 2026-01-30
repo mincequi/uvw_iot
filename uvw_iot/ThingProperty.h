@@ -2,13 +2,13 @@
 
 #include <array>
 #include <cstdint>
-#include <map>
 #include <optional>
 #include <string>
 #include <variant>
 
 namespace uvw_iot {
 
+// Check this for reference: https://github.com/bluetoother/bipso/wiki/BIPSO-Specification
 enum class ThingPropertyKey : size_t {
     // custom properties - generic
     timestamp,
@@ -35,6 +35,10 @@ enum class ThingPropertyKey : size_t {
 
     // ipso properties
     //generic_sensor,
+    digitalInput,
+    digitalOutput,
+    analogInput,
+    analogOutput,
     temperature,
     power,
     actuation,
@@ -46,6 +50,22 @@ enum class ThingPropertyKey : size_t {
     // ipso properties - not meant for export
     voltage, // Only object, no reusable object
     current, // Only object, no reusable object
+
+    //frequency,
+    //depth,
+    percentage,
+    //altitude,
+    //load,
+    //pressure,
+    //loudness,
+    //concentration,
+    //acidity,
+    //conductivity,
+
+    //distance,
+    //energy,
+    //direction,
+    multistateSelector,
 
     count
 };
@@ -68,6 +88,11 @@ template<> struct PropertyType<ThingPropertyKey::pv_power>  { using type = int; 
 template<> struct PropertyType<ThingPropertyKey::grid_power>  { using type = int; };
 template<> struct PropertyType<ThingPropertyKey::short_term_grid_power>  { using type = int; };
 template<> struct PropertyType<ThingPropertyKey::long_term_grid_power>  { using type = int; };
+
+template<> struct PropertyType<ThingPropertyKey::digitalInput>  { using type = std::vector<bool>; };
+template<> struct PropertyType<ThingPropertyKey::digitalOutput>  { using type = std::vector<bool>; };
+template<> struct PropertyType<ThingPropertyKey::analogInput>  { using type = std::vector<int>; };
+template<> struct PropertyType<ThingPropertyKey::analogOutput>  { using type = std::vector<int>; };
 template<> struct PropertyType<ThingPropertyKey::temperature>  { using type = double; };
 template<> struct PropertyType<ThingPropertyKey::power> { using type = int; };
 template<> struct PropertyType<ThingPropertyKey::actuation> { using type = bool; };
@@ -76,6 +101,9 @@ template<> struct PropertyType<ThingPropertyKey::phases>  { using type = int; };
 template<> struct PropertyType<ThingPropertyKey::next_phases>  { using type = int; };
 template<> struct PropertyType<ThingPropertyKey::voltage>  { using type = std::array<int, 3>; };
 template<> struct PropertyType<ThingPropertyKey::current>  { using type = int; };
+template<> struct PropertyType<ThingPropertyKey::percentage>  { using type = std::vector<int>; };
+template<> struct PropertyType<ThingPropertyKey::multistateSelector>  { using type = std::vector<bool>; };
+
 
 template<ThingPropertyKey K> using PropertyValueT = typename PropertyType<K>::type;
 

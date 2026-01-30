@@ -10,6 +10,7 @@ class Thing {
 public:
     virtual const std::string& id() const = 0;
     inline virtual ThingType type() const { return ThingType::Unknown; }
+    inline int lastSeen() const { return _lastSeen; }
 
     inline virtual void disconnect() {}
 
@@ -28,6 +29,7 @@ protected:
     virtual void onSetProperties(const ThingPropertyMap&) {}
 
 private:
+    int _lastSeen = 0;
     ThingPropertyMap _properties;
     // Note: we do not use here a behaviour_subject since we only want to
     //       publish changed properties.
