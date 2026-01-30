@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <magic_enum_iostream.hpp>
+#include <rfl/json/write.hpp>
 
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/bundled/ranges.h>
@@ -31,14 +32,7 @@ std::ostream& operator<<(std::ostream& s, const uvw_iot::ThingPropertyMap& map) 
     //for (const auto& [k, v] : map) {
     map.forEach([&](const ThingPropertyKey k, const auto& v) {
         s << k << ": ";
-        // Check for type of v and then format accordingly
-        using T = std::decay_t<decltype(v)>;
-        if constexpr (std::is_same_v<T, std::array<int, 3>>) {
-            s << "[" << v[0] << ", " << v[1] << ", " << v[2] << "]";
-        } else {
-            s << v;
-        }
-
+        rfl::json::write(v, s);
         s << ", ";
     });
 

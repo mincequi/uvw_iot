@@ -12,6 +12,7 @@ enum class ThingType {
     Site,
     Battery,
     WeatherStation,
+    Heater,
 };
 
 } // namespace uvw_iot

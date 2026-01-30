@@ -20,7 +20,8 @@ PUBLIC
   RPP::rpp
   uvw_net::http
   uvw_net::sunspec
-  nlohmann_json::nlohmann_json
+  nlohmann_json
+  reflectcpp
 )
 
 target_include_directories(uvw_iot

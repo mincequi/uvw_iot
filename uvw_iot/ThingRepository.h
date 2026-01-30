@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+
 #include <uvw_iot/Thing.h>
 
 namespace uvw_iot {
