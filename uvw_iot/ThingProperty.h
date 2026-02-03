@@ -65,7 +65,7 @@ enum class ThingPropertyKey : size_t {
     //conductivity,
 
     //distance,
-    //energy,
+    energy,
     //direction,
     multistateSelector,
 
@@ -104,6 +104,7 @@ template<> struct PropertyType<ThingPropertyKey::next_phases>  { using type = in
 template<> struct PropertyType<ThingPropertyKey::voltage>  { using type = std::array<int, 3>; };
 template<> struct PropertyType<ThingPropertyKey::current>  { using type = int; };
 template<> struct PropertyType<ThingPropertyKey::percentage>  { using type = std::vector<int>; };
+template<> struct PropertyType<ThingPropertyKey::energy>  { using type = int; };
 template<> struct PropertyType<ThingPropertyKey::multistateSelector>  { using type = std::vector<bool>; };
 
 

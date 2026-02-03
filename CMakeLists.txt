@@ -24,10 +24,16 @@ CPMAddPackage(
 )
 
 add_subdirectory(uvw_iot)
-add_subdirectory(tools)
 
 # Add tests
+option(BUILD_TESTING "Build tests" OFF)
 if(BUILD_TESTING)
     enable_testing()
     add_subdirectory(tests)
+endif()
+
+# Add tools
+option(BUILD_TOOLS "Build tools" OFF)
+if(BUILD_TOOLS)
+    add_subdirectory(tools)
 endif()

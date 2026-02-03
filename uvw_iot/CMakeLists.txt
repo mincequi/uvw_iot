@@ -1,5 +1,3 @@
-#add_subdirectory(goe)
-
 add_library(uvw_iot STATIC
   Thing.cpp
   ThingFactory.cpp
