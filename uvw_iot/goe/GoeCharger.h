@@ -24,6 +24,9 @@ private:
     void onBody(const std::string& body) override;
 
     ThingStatus _status = ThingStatus::unknown;
+
+    int _currentDay = 0;
+    int _initialEnergy = 0;
 };
 
 } // namespace goe

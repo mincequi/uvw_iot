@@ -10,11 +10,6 @@ void Thing::setProperties(const ThingPropertyMap& properties) {
     onSetProperties(properties);
 }
 
-dynamic_observable<ThingPropertyMap> Thing::propertiesObservable() const {
-    return _propertiesSubject.get_observable();
-}
-
-
 void Thing::publish(const ThingPropertyMap& properties) {
     _lastSeen = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 

@@ -20,6 +20,9 @@ private:
     void onBody(const std::string& body) override;
 
     bool _isPm = false;
+
+    int _currentDay = 0;
+    int _initialEnergy = 0;
 };
 
 } // namespace shelly

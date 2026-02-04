@@ -43,7 +43,7 @@ void GoeCharger::onSetProperties(const ThingPropertyMap& properties) {
 
 void GoeCharger::fetchProperties() {
     // alw,car,eto,nrg,wh,trx,cards"
-    get("/api/status?filter=nrg,car"); // psm (for phases) and amp (for amps)
+    get("/api/status?filter=nrg,car,eto"); // psm (for phases) and amp (for amps)
 }
 
 void GoeCharger::onBody(const std::string& body) {
@@ -64,6 +64,19 @@ void GoeCharger::onBody(const std::string& body) {
     properties.set<ThingPropertyKey::status>((int)_status);
     properties.set<ThingPropertyKey::power>((int)round(nrg[11]));
     properties.set<ThingPropertyKey::voltage>(voltage);
+
+    if (doc.contains("eto")) {
+        const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        const int day = now / (24 * 3600);
+        const int energy = doc["eto"].get<int>()/100;
+
+        if (day != _currentDay) {
+            _currentDay = day;
+            _initialEnergy = energy;
+        }
+
+        properties.set<ThingPropertyKey::energy>(energy - _initialEnergy);
+    }
 
     publish(properties);
 }

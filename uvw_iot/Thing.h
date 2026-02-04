@@ -16,7 +16,11 @@ public:
 
     virtual void fetchProperties() {}
     void setProperties(const ThingPropertyMap& properties);
-    dynamic_observable<ThingPropertyMap> propertiesObservable() const;
+
+    inline dynamic_observable<ThingPropertyMap> propertiesObservable() const {
+        return _propertiesSubject.get_observable();
+    }
+
     inline const ThingPropertyMap& properties() const { return _properties; }
 
 protected:

@@ -65,7 +65,7 @@ enum class ThingPropertyKey : size_t {
     //conductivity,
 
     //distance,
-    energy,
+    energy, // [0.1 kWh]
     //direction,
     multistateSelector,
 
