@@ -68,14 +68,14 @@ void GoeCharger::onBody(const std::string& body) {
     if (doc.contains("eto")) {
         const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         const int day = now / (24 * 3600);
-        const int energy = doc["eto"].get<int>()/100;
+        const int energy = doc["eto"].get<int>();
 
         if (day != _currentDay) {
             _currentDay = day;
             _initialEnergy = energy;
         }
 
-        properties.set<ThingPropertyKey::energy>(energy - _initialEnergy);
+        properties.set<ThingPropertyKey::energy>((energy - _initialEnergy) * 60 / 1000); // Wh to kWm
     }
 
     publish(properties);

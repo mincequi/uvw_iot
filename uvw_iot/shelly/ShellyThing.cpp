@@ -52,14 +52,14 @@ void ShellyThing::onBody(const std::string &body) {
         // Shelly PM reports energy in Watt-minute, but we want it in 0.1 kWh
         const auto now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         const int day = now / (24 * 3600);
-        const int energy = doc["meters"][0]["total"].get<int>() / 6000;
+        const int energy = doc["meters"][0]["total"].get<int>();
 
         if (day != _currentDay) {
             _currentDay = day;
             _initialEnergy = energy;
         }
 
-        properties.set<ThingPropertyKey::energy>(energy - _initialEnergy);
+        properties.set<ThingPropertyKey::energy>((energy - _initialEnergy) / 1000); // Wm to kWm
     }
 
     if (doc.contains("ext_temperature") && !doc.at("ext_temperature").empty()) {
