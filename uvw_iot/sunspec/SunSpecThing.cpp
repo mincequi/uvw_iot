@@ -1,5 +1,7 @@
 #include "SunSpecThing.h"
 
+#include <cmath>
+
 #include <uvw_iot/util/Util.h>
 #include <uvw_net/sunspec/SunSpecTypes.h>
 
@@ -43,19 +45,29 @@ SunSpecThing::SunSpecThing(SunSpecClientPtr client) :
     _client->on<SunSpecModel>([this](const SunSpecModel& model, const auto&) {
         _errorCount = 0;
 
-        ThingPropertyMap props;
+        ThingPropertyMap properties;
         for (const auto& v : model.values()) {
             switch (v.first) {
             case DataPoint::totalActiveAcPower:
-                props.set<ThingPropertyKey::power>(std::get<int>(v.second));
+                properties.set<ThingPropertyKey::power>(std::get<int>(v.second));
                 break;
             case DataPoint::operatingStatus:
-                props.set<ThingPropertyKey::status>((int)std::get<InverterOperatingStatus>(v.second));
+                properties.set<ThingPropertyKey::status>((int)std::get<InverterOperatingStatus>(v.second));
+                break;
+            case DataPoint::dc: {
+                auto blockArray = std::get<std::vector<SunSpecBlock<double>>>(v.second);
+                std::vector<int> dcPowers(blockArray.size());
+                for (size_t i = 0; i < blockArray.size(); ++i) {
+                    dcPowers[i] = round(blockArray[i].data().at(DataPoint::power));
+                }
+                properties.set<ThingPropertyKey::dcPower>(dcPowers);
+                break;
+            }
             default:
                 break;
             }
         }
-        publish(props);
+        publish(properties);
     });
 }
 
@@ -85,6 +97,7 @@ void SunSpecThing::fetchProperties() {
         case SunSpecModel::Id::InverterThreePhase:
         case SunSpecModel::Id::InverterSplitPhase:
         case SunSpecModel::Id::MeterWyeConnectThreePhase:
+        case SunSpecModel::Id::InverterMpptExtension:
             _client->readModel(kv.first);
             break;
         default:

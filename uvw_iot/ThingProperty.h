@@ -68,6 +68,8 @@ enum class ThingPropertyKey : size_t {
     energy, // [1 kWm (Kilowatt-minute)]
     //direction,
     multistateSelector,
+    dcPower,
+    dcEnergy, // [1 kWm (Kilowatt-minute)]
 
     count
 };
@@ -106,7 +108,8 @@ template<> struct PropertyType<ThingPropertyKey::current>  { using type = int; }
 template<> struct PropertyType<ThingPropertyKey::percentage>  { using type = std::vector<int>; };
 template<> struct PropertyType<ThingPropertyKey::energy>  { using type = int; };
 template<> struct PropertyType<ThingPropertyKey::multistateSelector>  { using type = std::vector<bool>; };
-
+template<> struct PropertyType<ThingPropertyKey::dcPower>  { using type = std::vector<int>; };
+template<> struct PropertyType<ThingPropertyKey::dcEnergy>  { using type = std::vector<int>; };
 
 template<ThingPropertyKey K> using PropertyValueT = typename PropertyType<K>::type;
 
